@@ -17,3 +17,17 @@ Il codice implemente la terza fase del progetto e si occupa della scrittura su f
       *  **Scrittura matrice sparsa ($A$):** vengono scritti sul file `A_N.txt` gli elemententi sulla diagonale principale ($4C$). Identificati i nodi vicini, sfruttando le liste di adiacenza, per ciascuno di essi viene scritto un elemento fuori diagonale ($C$).
 
 $^1$ Per maggiori informazioni su di `leggiCoords` vedi _task1.md_ e _task2.md_
+
+---
+
+## Patch 1
+
+Questa versione si concentra sulla **flessibilità del riordinamento** e sulla strutturazione dei file.
+
+**Modifiche apportate**
+
+   * **Supporto multi-ordinamento:** in `leggiOrd(N)` attraverso un ulteriore parametro, `tipo_ordinamento,` viene aggiunta la possibilità di scegliere se generare il sistema con l'ordinamento naturale (identità, `"old"`) oppure con quello ottenuto tramite Nested Dissection (`"new"`).
+
+   * **Ciclo sugli ordinamenti:** Il main ora itera su un vettore `ordinamenti_da_eseguire = {"old", "new"}` per generare in una sola passata sia il sistema originale che quello riordinato, utile per fare benchmark e confronti.
+
+   * **Feedback Visivo:** Vengono stampati a terminale messaggi di log che informano l'utente sull'inizio della generazione e sull'avvenuto salvataggio dei file.
