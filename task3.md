@@ -26,8 +26,20 @@ Questa versione si concentra sulla **flessibilità del riordinamento** e sulla s
 
 **Modifiche apportate**
 
-   * **Supporto multi-ordinamento:** in `leggiOrd(N)` attraverso un ulteriore parametro, `tipo_ordinamento,` viene aggiunta la possibilità di scegliere se generare il sistema con l'ordinamento naturale (identità, `"old"`) oppure con quello ottenuto tramite Nested Dissection (`"new"`).
+   * **Supporto multi-ordinamento:** in `leggiOrd(N)` viene aggiunta la possibilità di scegliere se generare il sistema con l'ordinamento naturale (identità, `"old"`) oppure con quello ottenuto tramite Nested Dissection (`"new"`).
 
    * **Ciclo sugli ordinamenti:** Il main ora itera su un vettore `ordinamenti_da_eseguire = {"old", "new"}` per generare in una sola passata sia il sistema originale che quello riordinato, utile per fare benchmark e confronti.
 
    * **Feedback Visivo:** Vengono stampati a terminale messaggi di log che informano l'utente sull'inizio della generazione e sull'avvenuto salvataggio dei file.
+
+---
+
+## Patch 2
+
+Questa versione completa l'aspetto **matematico e fisico** del problema, gestendo correttamente le frontiere del dominio.
+
+**Modifiche apportate**
+
+   * **Condizioni al Contorno di Dirichlet:** Viene introdotta la funzione `temperatura_bordo(x, y)` per simulare una temperatura non nulla sui bordi del dominio.
+
+   * **Aggiornamento Termine Noto:** Nel ciclo principale di scrittura il codice estrae le coordinate discrete `i` e `j` del nodo. Se il nodo si trova sul bordo (cioè se $i=1$, $i=N$, $j=1$ o $j=N$), il contributo del nodo esterno noto viene moltiplicato per $C$ e _sottratto_ dal termine noto. Ora il sistema lineare rappresenta il problema fisico completo dei suoi valori al contorno, non assumendo più implicitamente che i bordi siano a valore zero.
