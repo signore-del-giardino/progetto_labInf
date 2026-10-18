@@ -78,8 +78,8 @@ pair<vector<int>, vector<int>> leggiOrd(int N, const string& tipo_ordinamento) {
         
         int m, n;
         while (fileOrd >> m >> n) {
-            nuovo_a_vecchio[m] = n;  // inserendo il nuovo ID (m) mi restituisce il vecchio (n)
-            vecchio_a_nuovo[n] = m;  // inserendo il vecchio ID (n) mi restituisce il nuovo (m)
+            nuovo_a_vecchio[m] = n;     // inserendo il nuovo ID (m) mi restituisce il vecchio (n)
+            vecchio_a_nuovo[n] = m;     // inserendo il vecchio ID (n) mi restituisce il nuovo (m)
         }
         fileOrd.close();
     }
@@ -87,13 +87,17 @@ pair<vector<int>, vector<int>> leggiOrd(int N, const string& tipo_ordinamento) {
     return {nuovo_a_vecchio, vecchio_a_nuovo};
 }
 
-double termineNoto(double x, double y) {
+double termine_noto(double x, double y) {
     return exp(- 10 * (x * x + y * y));
+}
+
+double temperatura_bordo(double x, double y) {
+    return 0;
 }
 
 int main() {
     vector<int> punti = {32, 64, 128, 256, 512, 1024};
-
+    
     for (int N : punti) {
         // --- Lettura file di input ---
         vector<Nodo> nodi = leggiCoords(N);
@@ -136,8 +140,21 @@ int main() {
                 double x = nodi[id_originale].x;
                 double y = nodi[id_originale].y;
                 
+                // Accedo alle coordinate spaziali
+                double x = nodi[id_originale].x;
+                double y = nodi[id_originale].y;
+
+                // Inizializzo il termine noto
+                double rhs = - termine_noto(x, y);
+
+                // Ricorda le condizioni al contorno! 
+                if (i == 1) { rhs -= C * temperatura_bordo(x - h, y); }
+                if (i == N) { rhs -= C * temperatura_bordo(x + h, y); }
+                if (j == 1) { rhs -= C * temperatura_bordo(x, y - h); }
+                if (j == N) { rhs -= C * temperatura_bordo(x, y + h); }
+            
                 // Scrivo su rhs_N.txt il valore del termine noto (cambiato di segno)
-                fileRHS << - termineNoto(x, y) << "\n";
+                fileRHS << rhs << "\n";
 
                 // Scrivo su A_N.txt il valore dell'elemento diagonale
                 fileA << i << " " << i << " " << - 4 * C << "\n";
