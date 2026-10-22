@@ -3,8 +3,10 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <filesystem>
 
 using namespace std;
+namespace fs = filesystem;
 
 struct Nodo {
     int id;         // identificativo numerico del nodo
@@ -14,16 +16,17 @@ struct Nodo {
 
 vector<Nodo> leggiCoords(int N) {
     vector<Nodo> nodi(N * N);
-
-    string nome_coords = "coords_" + to_string(N) + ".txt";
-    int id, i, j;
-    double x, y;
+    string nome_coords = "output/coords_" + to_string(N) + ".txt";
 
     ifstream fileCoords(nome_coords);
     if (!fileCoords) {
-        cerr << "Errore: impossibile aprire " << nome_coords << endl;
+        cerr << "[ERRORE] Impossibile aprire " << nome_coords << "\nEsegui 'discretizzazione_dominio'!" << endl;
         return {};
-    } while (fileCoords >> id >> i >> j >> x >> y) {
+    } 
+    
+    int id, i, j;
+    double x, y;
+    while (fileCoords >> id >> i >> j >> x >> y) {
         // Posizioniamo il nodo esattamente nell'indice corrispondente al suo ID originale
         nodi[id] = {id, i, j, x, y}; 
     }
@@ -34,6 +37,12 @@ vector<Nodo> leggiCoords(int N) {
 
 // Implementazione (ricorsiva) dell'algoritmo di Nested Dissection
 void nested_dissection(vector<Nodo>& nodi, int asse, int min_i, int max_i, int min_j, int max_j, vector<int>& ordinamento_finale) {
+    /*
+    nodi, vettore contenente i punti del dominio
+    asse, intero con cui determinio la direzione del taglio: asse == 0 taglio lungo x, asse == 1 taglio lungo y
+    min_i, max_i, min_j, max_j servono a determinare il valore dell'elemento separatore
+    ordinamento_finale contiene gli indici riordinati dei nodi del grafo
+    */
 
     if (nodi.empty()) return;       // insieme vuoto
 
@@ -83,28 +92,33 @@ void nested_dissection(vector<Nodo>& nodi, int asse, int min_i, int max_i, int m
 }
 
 int main() {
-    vector<int> punti = {32, 64, 128, 256, 512, 1024};
+    int N;
+    cout << "Inserisci il valore di N per il riordinamento: ";
+    cin >> N;
+    
+    // Lettura dal file coords.txt
+    vector<Nodo> nodi = leggiCoords(N);
+    if (nodi.empty()) return 1;
 
-    for (int N : punti) {
-        // Lettura dal file coords.txt
-        vector<Nodo> nodi = leggiCoords(N);
-	if (nodi.empty()) return 1;
+    vector<int> ordinamento_finale;
+    // Esecuzione dell'ordinamento
+    nested_dissection(nodi, 0, 1, N, 1, N, ordinamento_finale);
 
-        vector<int> ordinamento_finale;
-        // Esecuzione dell'ordinamento
-        nested_dissection(nodi, 0, 1, N, 1, N, ordinamento_finale);
-
-        string nome_ordering = "ordering_" + to_string(N) + ".txt";
-        // Trascrizione del risultato su ordering_N.txt
-        ofstream fileOrd(nome_ordering);
-        if (!fileOrd) {
-            cerr << "Errore: impossibile creare " << nome_ordering << "\n";
-            return 1;
-        } for (int m = 0; m < ordinamento_finale.size(); m++) {
-            fileOrd << m << " " << ordinamento_finale[m] << "\n";
-        }
-        fileOrd.close();
+    // Trascrizione del risultato su ordering_N.txt
+    string nome_ordering = "output/ordering_" + to_string(N) + ".txt";
+    ofstream fileOrd(nome_ordering);
+    
+    if (!fileOrd) {
+        cerr << "Errore: impossibile creare " << nome_ordering << endl;
+        return 1;
+    } 
+    
+    for (int m = 0; m < ordinamento_finale.size(); m++) {
+        fileOrd << m << " " << ordinamento_finale[m] << "\n";
     }
+    fileOrd.close();
+    
+    cout << "File ordering_" << N << ".txt generato con successo!" << endl;
         
     return 0;
 }
