@@ -43,3 +43,17 @@ Questa versione completa l'aspetto **matematico e fisico** del problema, gestend
    * **Condizioni al Contorno di Dirichlet:** Viene introdotta la funzione `temperatura_bordo(x, y)` per simulare una temperatura non nulla sui bordi del dominio.
 
    * **Aggiornamento Termine Noto:** Nel ciclo principale di scrittura il codice estrae le coordinate discrete `i` e `j` del nodo. Se il nodo si trova sul bordo (cioè se $i=1$, $i=N$, $j=1$ o $j=N$), il contributo del nodo esterno noto viene moltiplicato per $C$ e _sottratto_ dal termine noto. Ora il sistema lineare rappresenta il problema fisico completo dei suoi valori al contorno, non assumendo più implicitamente che i bordi siano a valore zero.
+
+---
+
+## Patch 3
+
+Questo versione mira a migliorare la **user experience** e la robustezza.
+
+**Modifiche apportate**
+
+   * **Organizzazione Output:** I file generati (`A_N_ord.txt` e `rhs_N_ord.txt`) così come quelli letti, vengono re-indirizzati in una cartella dedicata chiamata `output/`.
+
+   * **Interattività:** Il ciclo *hardcoded* sulle dimensioni $N$ viene rimosso. Il programma utilizza `cin` per chiedere interattivamente all'utente quale valore di $N$ processare e quale ordinamento applicare (`"old"`, `"new"`, o `"both"`).
+   
+   * **Gestione degli errori e Filesystem:** I messaggi di errore nelle funzioni adibite alla lettura dei file sono più esplicativi e guidano l'utente (es. *"Esegui 'discretizzazione_dominio'!"*).
