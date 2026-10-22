@@ -28,3 +28,21 @@ Il codice ha subìto interventi di **refactoring e ottimizzazione algoritmica**,
   * Le chiamate ricorsive ora aggiornano i confini passati ai figli (es. da $min_i$ a $separatore - 1$).
 
 * **Gestione dei Casi Limite:** È stato introdotto un controllo `if (min == max)` per continuare la ricorsione semplicemente invertendo l'asse qualora un lato del dominio non sia più sezionabile.
+
+---
+
+## Patch 2
+
+Quest'ultimo aggiornamento si concentra sull'**usabilità, sull'organizzazione dei file e sulla gestione degli errori**.
+
+**Modifiche apportate**
+
+* **Gestione delle Directory (`<filesystem>`):** Viene introdotta la libreria `filesystem` standard del C++. Il codice si aspetta (e verifica) che i file si trovino all'interno di una sottocartella dedicata `"output/"`, mantenendo ordinata la working directory dell'utente.
+
+* **Interazione con l'Utente:** Il ciclo predefinito sulle diverse dimensioni $N$ nel `main` è stato eliminato. Il programma ora chiede esplicitamente all'utente (tramite `cin`) per quale valore di $N$ intende effettuare il calcolo.
+
+* **Miglioramento dei Log d'Errore:** Nel caso non si riesca ad aprire il file di coordinate o se la cartella `"output/"` è mancante, i messaggi di `cerr` suggeriscono all'utente le azioni da intraprendere (es. "*Esegui 'discretizzazione_dominio'!*").
+
+* **Documentazione Interna:** È stato aggiunto un blocco commento all'inizio della funzione ricorsiva `nested_dissection` per spiegare chiaramente lo scopo di tutti i parametri inseriti nella versione 2.
+
+* **Feedback Visivo:** È stato inserito un log di successo alla fine dell'esecuzione che conferma dove e con quale nome è stato salvato il risultato.
