@@ -2,8 +2,10 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 using namespace std;
+namespace fs = filesystem;
 
 void discretizzazione_dominio(int N) {
     double h = 1.0 / (N + 1);   // passo reticolare
@@ -11,8 +13,8 @@ void discretizzazione_dominio(int N) {
     int e = 0;  // indice di numerazione degli archi
 
     // Definizione nomi dei file
-    string nome_coords = "coords_" + to_string(N) + ".txt";
-    string nome_conn = "connectivity_" + to_string(N) + ".txt";
+    string nome_coords = "output/coords_" + to_string(N) + ".txt";
+    string nome_conn = "output/connectivity_" + to_string(N) + ".txt";
 
     ofstream fileCoords(nome_coords);
     ofstream fileConn(nome_conn);
@@ -45,19 +47,21 @@ void discretizzazione_dominio(int N) {
             }
         }
     }
-
     fileCoords.close();
     fileConn.close();
 }
 
 int main() {
-    vector<int> punti = {32, 64, 128, 256, 512, 1024};
+    int N;
+    cout << "Inserisci il valore di N richiesto: ";
+    cin >> N;
 
-    // Ad ogni iterazione genero una coppia di file: coords_32.txt, connectivity_32.txt ecc.
-    for (int N : punti) {
-        cout << "Elaborazione N = " << N << " in corso..." << endl;
-        discretizzazione_dominio(N); 
-    }
+    // Creazione della cartella "output" se non esiste
+    fs::create_directory("output");
+
+    cout << "Elaborazione N = " << N << " in corso..." << endl;
+    discretizzazione_dominio(N);
+    cout << "File coords_" << N << ".txt e connectivity_" << N << ".txt generati nella cartella 'output'." << endl;
     
     return 0;
 }
